@@ -1,8 +1,8 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-// require("dotenv").config({ path: `nodemailer/.env` });
-// const nodemailer = require("./nodemailer");
+require("dotenv").config({ path: `nodemailer/.env` });
+const nodemailer = require("./nodemailer");
 
 // 크롤링 대상
 const getHTML = async (keyword, resultCnt, regionNumber) => {
@@ -32,12 +32,22 @@ const parsing = async (page) => {
     const url =
       "https://www.work.go.kr" + $(node).find(".cp-info-in > a").attr("href"); // 채용공고 상세 보기 url
     const company = $(node).find(".cp_name:eq(0)").text().trim(); // 회사명
+    const experience = $(node).find("em:eq(0)").text().trim(); // 경력
+    const education = $(node)
+      .find("em:eq(1)")
+      .text()
+      .trim()
+      .replace("\n\t\t\t\t\t\t\t\t\t\t", ""); // 학력
+    const location = $(node).find("em:eq(2)").text().trim(); // 회사 위치
 
     if (jobTitle != "") {
       jobs.push({
         jobTitle,
-        company,
         url,
+        company,
+        experience,
+        education,
+        location,
       });
     }
   });
@@ -53,35 +63,38 @@ const getJobs = async (keyword, resultCnt = "10", regionNumber = "") => {
   const jobs = await parsing(html);
   console.log(jobs);
 
-  //   const h = [];
-  //   h.push('<table style="border:1px solid black;">');
-  //   h.push("<thead>");
-  //   h.push("<tr>");
-  //   h.push("<th>구인제목</th>");
-  //   h.push("<th>회사명</th>");
-  //   h.push("<th>경력</th>");
-  //   h.push("<th>학력</th>");
-  //   h.push("</tr>");
-  //   h.push("</thead>");
-  //   h.push("<tbody>");
-  //   jobs.forEach((j) => {
-  //     h.push(`<tr>`);
-  //     h.push(`<td><a href="${j.url}">${j.jobTitle}</a></td>`);
-  //     h.push(`<td>${j.company}</td>`);
-  //     h.push(`<td>${j.experience}</td>`);
-  //     h.push(`<td>${j.education}</td>`);
-  //     h.push(`</tr>`);
-  //   });
-  //   h.push("</tbody>");
-  //   h.push("</table>");
+  // 이메일 테이블 생성 및 발송
+  const h = [];
+  h.push('<table style="border:1px solid black;">');
+  h.push("<thead>");
+  h.push("<tr>");
+  h.push("<th>구인제목</th>");
+  h.push("<th>회사명</th>");
+  h.push("<th>경력</th>");
+  h.push("<th>학력</th>");
+  h.push("<th>위치</th>");
+  h.push("</tr>");
+  h.push("</thead>");
+  h.push("<tbody>");
+  jobs.forEach((j) => {
+    h.push(`<tr>`);
+    h.push(`<td><a href="${j.url}">${j.jobTitle}</a></td>`);
+    h.push(`<td>${j.company}</td>`);
+    h.push(`<td>${j.experience}</td>`);
+    h.push(`<td>${j.education}</td>`);
+    h.push(`<td>${j.location}</td>`);
+    h.push(`</tr>`);
+  });
+  h.push("</tbody>");
+  h.push("</table>");
 
-  //   const message = {
-  //     from: "ubithus@gmail.com",
-  //     to: "ubithus@gmail.com",
-  //     subject: "vue.js 구인 회사 정보",
-  //     html: h.join(""),
-  //   };
-  //   await nodemailer.send(message);
+  const message = {
+    from: "ubithus@gmail.com",
+    to: "ubithus@gmail.com",
+    subject: `${keyword} 구인 회사 정보`,
+    html: h.join(""),
+  };
+  await nodemailer.send(message);
 };
 
 getJobs("javascript", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
