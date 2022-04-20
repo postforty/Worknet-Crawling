@@ -37,7 +37,8 @@ const parsing = async (page) => {
       .find("em:eq(1)")
       .text()
       .trim()
-      .replace("\n\t\t\t\t\t\t\t\t\t\t", ""); // 학력
+      // .replace("\n\t\t\t\t\t\t\t\t\t\t", ""); // 학력
+      .replace(/(\n)+(\t)*/, ""); // 학력(정규식 사용)
     const location = $(node).find("em:eq(2)").text().trim(); // 회사 위치
 
     if (jobTitle != "") {
@@ -97,4 +98,4 @@ const getJobs = async (keyword, resultCnt = "10", regionNumber = "") => {
   await nodemailer.send(message);
 };
 
-getJobs("javascript", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
+getJobs("java", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
