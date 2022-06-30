@@ -9,6 +9,7 @@ const getHTML = async (keyword, resultCnt, regionNumber) => {
   try {
     const html =
       // getJobs()을 호출할 때 워크넷 url은 "검색어(encodeURI), 검색 결과 수(resultCnt), 지역코드(regionNumber)"를 동적으로 받음
+      // 검색어가 제대로 작동하지 않는 경우가 있었음. axios에서 받아오는 워크넷 url이 변경된것이 원인이었음
       (
         await axios.get(
           `https://www.work.go.kr/empInfo/empInfoSrch/list/dtlEmpSrchList.do?careerTo=&keywordJobCd=&occupation=&templateInfo=&shsyWorkSecd=&rot2WorkYn=&payGbn=&resultCnt=${resultCnt}&keywordJobCont=&cert=&cloDateStdt=&moreCon=&minPay=&codeDepth2Info=11000&isChkLocCall=&sortFieldInfo=DATE&major=&resrDutyExcYn=&eodwYn=&sortField=DATE&staArea=&sortOrderBy=DESC&keyword=${encodeURI(keyword)}&termSearchGbn=all&carrEssYns=&benefitSrchAndOr=O&disableEmpHopeGbn=&webIsOut=&actServExcYn=&maxPay=&keywordStaAreaNm=&emailApplyYn=&listCookieInfo=DTL&pageCode=&codeDepth1Info=11000&keywordEtcYn=&publDutyExcYn=&keywordJobCdSeqNo=&exJobsCd=&templateDepthNmInfo=&computerPreferential=&regDateStdt=&employGbn=&empTpGbcd=&region=${regionNumber}&infaYn=&resultCntInfo=${resultCnt}&siteClcd=all&cloDateEndt=&sortOrderByInfo=DESC&currntPageNo=1&indArea=&careerTypes=&searchOn=Y&tlmgYn=&subEmpHopeYn=&academicGbn=&templateDepthNoInfo=&foriegn=&mealOfferClcd=&station=&moerButtonYn=&holidayGbn=&srcKeyword=%EC%A0%95%EB%B3%B4%EC%B2%98%EB%A6%AC%EA%B8%B0%EC%82%AC&enterPriseGbn=all&academicGbnoEdu=noEdu&cloTermSearchGbn=all&keywordWantedTitle=&stationNm=&benefitGbn=&keywordFlag=&notSrcKeyword=&essCertChk=&isEmptyHeader=&depth2SelCode=&_csrf=070d78d0-5056-4081-9019-d9ff14e35685&keywordBusiNm=&preferentialGbn=&rot3WorkYn=&pfMatterPreferential=&regDateEndt=&staAreaLineInfo1=11000&staAreaLineInfo2=1&pageIndex=1&termContractMmcnt=&careerFrom=&laborHrShortYn=`
@@ -96,4 +97,4 @@ const getJobs = async (keyword, resultCnt = "10", regionNumber = "") => {
   await nodemailer.send(message);
 };
 
-getJobs("javascript", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
+getJobs("java", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
