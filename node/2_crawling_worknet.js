@@ -97,4 +97,7 @@ const getJobs = async (keyword, resultCnt = "10", regionNumber = "") => {
   await nodemailer.send(message);
 };
 
+getJobs("정보처리기사", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
+getJobs("javascript", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
+getJobs("vue", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
 getJobs("java", 1000, 26000); // 검색어 , 최대 검색 결과 수, 지역(26000 - 부산전체)
